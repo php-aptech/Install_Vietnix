@@ -1,6 +1,6 @@
 #!bin/bass
 date=`date +%Y%m%d`
-dir=/root/Scripts
+dir=/root/Install_Vietnix
 
 ######Install and Config Timezone
 VntimeZone()
