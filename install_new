@@ -1,0 +1,48 @@
+#!bin/bass
+date=`date +%Y%m%d`
+dir=/root/Scripts
+
+######Install and Config Timezone
+VntimeZone()
+{
+yum install ntp -y
+rm -rf /etc/localtime;
+cp /usr/share/zoneinfo/Asia/Ho_Chi_Minh /etc/localtime;
+service ntpd stop;
+/usr/sbin/ntpdate 0.asia.pool.ntp.org;
+echo '50 * * * * /usr/sbin/ntpdate 0.asia.pool.ntp.org' >> /var/spool/cron/root
+echo 'CRON_TZ="Asia/Ho_Chi_Minh"
+TZ="ICT"' >> /etc/crontab
+service crond restart
+}
+
+ConfigIptables()
+{
+systemctl stop firewalld
+systemctl disable firewalld
+yum -y install iptables-services
+systemctl start iptables
+systemctl enable iptables
+}
+######Disable Selinux
+DropSelinux()
+{
+echo "SELINUX=disabled" > /etc/selinux/config; echo "SELINUXTYPE=targeted" >> /etc/selinux/config; setenforce 0
+}
+
+######Add Port Iptables "22"
+AddPortIptables()
+{
+cp $dir/iptables.txt /etc/sysconfig/iptables
+service iptables restart
+}
+
+
+######################
+#	 Run Function	 #	
+######################
+VntimeZone
+ConfigIptables
+DropSelinux
+AddPortIptables
+
